@@ -1,4 +1,4 @@
-# FinAlly Project - the Finance Ally
+# Artifinancial Project - your AI Finance Ally
 
 All project documentation is in the `planning` directory.
 

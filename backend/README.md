@@ -1,6 +1,6 @@
-# FinAlly Backend
+# Artifinancial Backend
 
-FastAPI backend for the FinAlly AI Trading Workstation.
+FastAPI backend for the Artifinancial AI Trading Workstation.
 
 ## Structure
 
