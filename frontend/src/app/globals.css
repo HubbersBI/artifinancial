@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/*
+ * Artifinancial terminal theme.
+ * Ground is #0d1117; panels lift one step; chrome uses #1a1a2e.
+ * Nothing is pure black and nothing is pure white.
+ */
+@theme {
+  --color-void: #0d1117;
+  --color-rail: #1a1a2e;
+  --color-panel: #131a23;
+  --color-panel-hi: #1b2430;
+  --color-edge: #2a323d;
+  --color-edge-hi: #3b4553;
+
+  --color-ink: #e6edf3;
+  --color-ink-dim: #8b95a1;
+  --color-ink-faint: #5c6672;
+
+  --color-accent: #ecad0a;
+  --color-primary: #209dd7;
+  --color-submit: #753991;
+
+  --color-up: #26d07c;
+  --color-down: #ff5765;
+
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-panel: 3px;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Digits must not jitter as prices tick. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Price flash: a wash applied on tick, decaying over ~500ms. */
+.flash-up {
+  animation: flash-up 500ms ease-out;
+}
+.flash-down {
+  animation: flash-down 500ms ease-out;
+}
+@keyframes flash-up {
+  from {
+    background-color: color-mix(in srgb, var(--color-up) 32%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+@keyframes flash-down {
+  from {
+    background-color: color-mix(in srgb, var(--color-down) 32%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash-up,
+  .flash-down {
+    animation: none;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-edge);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-edge-hi);
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-primary);
+  outline-offset: 1px;
+}
