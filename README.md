@@ -25,17 +25,43 @@ Single Docker container serving everything on port 8000:
 
 ## Quick Start
 
+Copy the env template and add your Groq key (free, no card: https://console.groq.com).
+Set `LLM_MOCK=true` instead to run without a key.
+
 ```bash
-# Clone and configure
 cp .env.example .env
-# Add your GROQ_API_KEY to .env (free key: https://console.groq.com)
-
-# Run with Docker
-docker build -t artifinancial .
-docker run -v artifinancial-data:/app/db -p 8000:8000 --env-file .env artifinancial
-
-# Open http://localhost:8000
 ```
+
+Then start it. The scripts build the image if it is missing, run the container
+with the named data volume, wait for health, and open the browser. They are safe
+to run repeatedly.
+
+macOS / Linux:
+
+```bash
+./scripts/start_mac.sh          # add --build to force a rebuild, --no-open to skip the browser
+./scripts/stop_mac.sh           # stops the container, keeps your data
+```
+
+Windows (PowerShell):
+
+```powershell
+.\scripts\start_windows.ps1     # add -Build to force a rebuild, -NoOpen to skip the browser
+.\scripts\stop_windows.ps1
+```
+
+Or drive Docker directly:
+
+```bash
+docker build -t artifinancial .
+docker run -d --name artifinancial \
+  -v artifinancial-data:/app/db -p 8000:8000 --env-file .env artifinancial
+```
+
+`docker compose up -d` works too. The app is at http://localhost:8000.
+
+Your portfolio lives in the named volume `artifinancial-data`, so it survives
+restarts and `docker rm`. Wipe it with `docker volume rm artifinancial-data`.
 
 ## Environment Variables
 

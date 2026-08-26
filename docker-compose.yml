@@ -1,0 +1,21 @@
+# Convenience wrapper around the same image, volume, and port the scripts use.
+#   docker compose up --build -d
+#   docker compose down          (keeps the named volume)
+
+services:
+  app:
+    build: .
+    image: artifinancial
+    container_name: artifinancial
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - artifinancial-data:/app/db
+    restart: unless-stopped
+
+volumes:
+  artifinancial-data:
+    # Explicit name so compose and `docker run` share one volume.
+    name: artifinancial-data
