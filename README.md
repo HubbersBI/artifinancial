@@ -1,5 +1,7 @@
 # Artifinancial — AI Trading Workstation
 
+![Artifinancial screenshot](artifinancial.png)
+
 An AI-powered trading workstation that streams live market data, simulates portfolio trading, and integrates an LLM chat assistant that can analyze positions and execute trades via natural language.
 
 Built entirely by a group of coding agents.
