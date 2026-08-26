@@ -82,7 +82,3 @@ artifinancial/
 ├── db/          # SQLite volume mount (runtime)
 └── scripts/     # Start/stop helpers
 ```
-
-## License
-
-See [LICENSE](LICENSE).
