@@ -4,7 +4,7 @@ import json
 import logging
 
 from fastapi import APIRouter, HTTPException
-from litellm.exceptions import RateLimitError
+from litellm.exceptions import JSONSchemaValidationError, RateLimitError
 from openai import APIError
 from pydantic import BaseModel, ValidationError
 
@@ -35,6 +35,12 @@ def send_message(request: ChatRequest) -> dict:
     except RateLimitError:
         raise HTTPException(
             status_code=429, detail="The assistant is rate limited, try again shortly"
+        ) from None
+    except JSONSchemaValidationError:
+        # Subclasses openai.APIError, so it must be caught before the branch
+        # below - otherwise the panel shows the whole serialised JSON schema.
+        raise HTTPException(
+            status_code=502, detail="The assistant returned an unreadable response"
         ) from None
     except APIError as exc:
         # Every provider failure - bad key, network drop, upstream outage - lands

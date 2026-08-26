@@ -5,8 +5,10 @@ from anyio import to_thread
 from litellm.exceptions import (
     APIConnectionError,
     BadRequestError,
+    JSONSchemaValidationError,
     RateLimitError,
     ServiceUnavailableError,
+    Timeout,
 )
 
 from app.api.chat import provider_reason
@@ -138,6 +140,29 @@ class TestProviderFailures:
 
         assert response.status_code == 429
         assert response.json()["detail"] == "The assistant is rate limited, try again shortly"
+
+    def test_a_schema_mismatch_reads_as_an_unreadable_response(self, client, monkeypatch):
+        # JSONSchemaValidationError subclasses openai.APIError, so without its own
+        # branch the panel would show the entire serialised JSON schema.
+        exc = JSONSchemaValidationError(
+            model=MODEL,
+            llm_provider="groq",
+            raw_response='{"message": 1}',
+            schema='{"huge": "schema"}',
+        )
+
+        response = self._raise(client, monkeypatch, exc)
+
+        assert response.status_code == 502
+        assert response.json()["detail"] == "The assistant returned an unreadable response"
+
+    def test_a_timeout_is_a_502(self, client, monkeypatch):
+        exc = Timeout(message="Request timed out", model=MODEL, llm_provider="groq")
+
+        response = self._raise(client, monkeypatch, exc)
+
+        assert response.status_code == 502
+        assert "The assistant is unavailable" in response.json()["detail"]
 
     def test_a_failed_turn_is_not_written_to_history(self, client, monkeypatch):
         exc = APIConnectionError(message="Connection refused", model=MODEL, llm_provider="groq")

@@ -52,3 +52,19 @@ def test_two_malformed_responses_raise(monkeypatch):
     with pytest.raises(ValidationError):
         client.complete([])
     assert len(calls) == 2
+
+
+def test_the_model_call_carries_a_request_timeout(monkeypatch):
+    """Without it a hung provider holds the request for LiteLLM's 600s default."""
+    captured = {}
+
+    def fake_completion(**kwargs):
+        captured.update(kwargs)
+        raise RuntimeError("stop here - only the kwargs matter")
+
+    monkeypatch.setattr("app.llm.client.completion", fake_completion)
+    with pytest.raises(RuntimeError):
+        client._call([{"role": "user", "content": "hi"}])
+
+    assert captured["timeout"] == client.TIMEOUT_SECONDS
+    assert client.TIMEOUT_SECONDS <= 60

@@ -12,11 +12,19 @@ def priced(cache):
     return cache
 
 
-def test_health(client):
+def test_health(client, monkeypatch):
+    monkeypatch.setenv("LLM_MOCK", "true")
     response = client.get("/api/health")
 
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.json() == {"status": "ok", "llm_mock": True}
+
+
+def test_health_reports_a_real_llm_instance(client, monkeypatch):
+    """The E2E guard keys off this flag to refuse a destructive run."""
+    monkeypatch.setenv("LLM_MOCK", "false")
+
+    assert client.get("/api/health").json()["llm_mock"] is False
 
 
 def test_get_portfolio_on_a_fresh_database(client):

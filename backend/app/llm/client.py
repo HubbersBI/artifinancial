@@ -11,6 +11,10 @@ from .schema import ChatResponse
 
 MODEL = "groq/openai/gpt-oss-120b"
 
+# LiteLLM defaults to 600s. Groq answers this model in seconds, so a call still
+# running after this is hung, and the user is staring at a loading indicator.
+TIMEOUT_SECONDS = 30
+
 litellm.enable_json_schema_validation = True
 
 
@@ -28,5 +32,6 @@ def _call(messages: list[dict]) -> ChatResponse:
         messages=messages,
         response_format=ChatResponse,
         reasoning_effort="low",
+        timeout=TIMEOUT_SECONDS,
     )
     return ChatResponse.model_validate_json(response.choices[0].message.content)
