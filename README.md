@@ -4,7 +4,7 @@
 
 An AI-powered trading workstation that streams live market data, simulates portfolio trading, and integrates an LLM chat assistant that can analyze positions and execute trades via natural language.
 
-Built entirely by a group of coding agents.
+Built by a team of six specialist coding agents — each owning a slice of the stack and working in parallel against a shared written interface contract — under my direction as architect and orchestrator
 
 ## Features
 
