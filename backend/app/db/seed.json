@@ -1,0 +1,4 @@
+{
+  "cash_balance": 10000.0,
+  "tickers": ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NVDA", "META", "JPM", "V", "NFLX"]
+}
