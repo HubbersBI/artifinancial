@@ -7,6 +7,13 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    # Documentation does not reach the published site, so a README edit should
+    # not cost a build and a deploy.
+    paths-ignore:
+      - "**/*.md"
+      - "planning/**"
+      - "LICENSE"
+      - "*.png"
   workflow_dispatch:
 
 permissions:

@@ -1,7 +1,10 @@
 # Artifinancial - multi-stage build (PLAN section 11).
 # Stage 1 builds the Next.js static export; stage 2 runs FastAPI and serves it.
 
-FROM node:20-slim AS frontend
+# Node 24 to match CI and the engines field in frontend/package.json. Node 20
+# reached end of life in April 2026, and a build stage on an unsupported
+# runtime is a security problem before it is a compatibility one.
+FROM node:24-slim AS frontend
 
 WORKDIR /build
 COPY frontend/package.json frontend/package-lock.json ./

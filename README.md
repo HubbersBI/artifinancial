@@ -1,5 +1,7 @@
 # Artifinancial — AI Trading Workstation
 
+*Portfolio demo by J. Hubbers — August 2026*
+
 ### [Open the live terminal](https://hubbersbi.github.io/artifinancial/)
 
 No install and no key. The published build runs entirely in your browser - the
