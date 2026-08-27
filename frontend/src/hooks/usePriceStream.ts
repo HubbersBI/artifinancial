@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { isStatic } from "@/lib/api";
+import { getEngine } from "@/lib/engine";
 import type { ConnectionState, PriceMap, SeriesPoint } from "@/lib/types";
 
 /** Points kept per ticker. At ~500ms a tick this is roughly five minutes. */
@@ -32,6 +34,19 @@ export function usePriceStream(url = "/api/stream/prices"): PriceStream {
   const failures = useRef(0);
 
   useEffect(() => {
+    // With no backend the engine ticks in this tab. There is no connection to
+    // lose, so the status dot is green from the first frame and stays there -
+    // reporting "reconnecting" would be theatre about a network that is absent.
+    if (isStatic) {
+      const off = getEngine().subscribe((payload) => {
+        setStatus("connected");
+        setPrices(payload);
+        appendPoints(seriesRef.current, payload);
+        setSeries({ ...seriesRef.current });
+      });
+      return off;
+    }
+
     const source = new EventSource(url);
 
     source.onopen = () => {

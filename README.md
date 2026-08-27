@@ -1,5 +1,11 @@
 # Artifinancial — AI Trading Workstation
 
+### [Open the live terminal](https://hubbersbi.github.io/artifinancial/)
+
+No install and no key. The published build runs entirely in your browser - the
+price simulator, the portfolio and the assistant - so nothing you do leaves your
+machine. Every price is simulated; see below.
+
 ![Artifinancial screenshot](artifinancial.png)
 
 An AI-powered trading workstation that streams live market data, simulates portfolio trading, and integrates an LLM chat assistant that can analyze positions and execute trades via natural language.
@@ -24,6 +30,12 @@ Single Docker container serving everything on port 8000:
 - **Database**: SQLite with lazy initialization
 - **AI**: LiteLLM → Groq (`gpt-oss-120b`, free tier) with structured outputs
 - **Market data**: Built-in GBM simulator (default) or Massive API (optional)
+
+For the published build the whole of that stack is replaced by
+`frontend/src/lib/engine/`, a TypeScript port of the simulator and the trade
+rules that runs in the browser. It is pinned to the Python it came from by
+`engine/__tests__/parity.test.ts`, so the two cannot quietly diverge.
+
 
 ## Quick Start
 
@@ -84,3 +96,17 @@ artifinancial/
 ├── db/          # SQLite volume mount (runtime)
 └── scripts/     # Start/stop helpers
 ```
+
+## About the live demo
+
+**<https://hubbersbi.github.io/artifinancial/>**
+
+No install and no key. The published build has **no backend at all**: the price
+simulator, the portfolio and the assistant all run in your browser, so the market
+starts fresh on your machine and your positions never leave it.
+
+Everything on that screen is simulated. The tickers are real companies, the prices
+are a random walk, the $10,000 is imaginary and the assistant is a scripted mock
+rather than a model. The site says so before it lets you in, and keeps saying so
+in the header, because real symbols at realistic prices beside the word LIVE is
+the one way a portfolio piece about markets could mislead someone.
