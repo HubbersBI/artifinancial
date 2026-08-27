@@ -29,6 +29,13 @@ describe("SimulatedNotice", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("is attributed and dated in the dialog", async () => {
+    render(<SimulatedNotice />);
+    await screen.findByRole("dialog");
+    expect(screen.getByText(/Portfolio demo by J\. Hubbers/)).toBeInTheDocument();
+    expect(screen.getByText(/August 2026/)).toBeInTheDocument();
+  });
+
   it("closes on Escape", async () => {
     render(<SimulatedNotice />);
     await screen.findByRole("dialog");
@@ -51,6 +58,11 @@ describe("SimulatedNotice", () => {
 });
 
 describe("SimulatedBadge", () => {
+  it("carries the attribution alongside the badge", () => {
+    render(<SimulatedBadge />);
+    expect(screen.getByText(/Portfolio demo by J\. Hubbers/)).toBeInTheDocument();
+  });
+
   it("keeps the fact in the chrome after the dialog is gone", () => {
     render(<SimulatedBadge />);
     // The dialog is dismissed once and forgotten; this is what a returning
