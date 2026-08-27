@@ -1,5 +1,6 @@
 import { money } from "@/lib/format";
 import type { ConnectionState } from "@/lib/types";
+import { SimulatedBadge } from "./SimulatedNotice";
 
 interface HeaderProps {
   totalValue: number;
@@ -30,6 +31,7 @@ export function Header({ totalValue, cashBalance, status }: HeaderProps) {
         <span className="text-[9px] uppercase tracking-[0.16em] text-ink-faint">
           Trading Terminal
         </span>
+        <SimulatedBadge />
       </div>
 
       <Readout label="Total value" testId="total-value" value={money(totalValue)} accent />

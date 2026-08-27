@@ -1,0 +1,86 @@
+name: Deploy to GitHub Pages
+
+# The published build has no backend: the simulator, the portfolio and the
+# assistant all run in the browser, so a deploy is a build and nothing else.
+# There is no data to fetch and no schedule to keep - the market is generated on
+# each visitor's machine, fresh every time they open the page.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # jsdom and undici, pulled in by vitest, require Node 22 or newer. The
+      # Dockerfile can stay where it is: it only runs `next build` and never
+      # loads jsdom. This is the job that runs the tests.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        working-directory: frontend
+        run: npm ci
+
+      - name: Test
+        working-directory: frontend
+        run: npm test -- --run
+
+      # A Pages project site is served from /<repo>, so every asset needs that
+      # prefix. A user site and a custom domain are served from the root. Set the
+      # repository variable PAGES_BASE_PATH to " " to force it empty for a
+      # custom domain.
+      - name: Work out the base path
+        run: |
+          override='${{ vars.PAGES_BASE_PATH }}'
+          repo="${GITHUB_REPOSITORY#*/}"
+          owner="${GITHUB_REPOSITORY%%/*}"
+          if [ -n "$override" ]; then
+            base="$(echo "$override" | tr -d '[:space:]')"
+          elif [ "$(echo "$repo" | tr '[:upper:]' '[:lower:]')" = "$(echo "$owner" | tr '[:upper:]' '[:lower:]').github.io" ]; then
+            base=""
+          else
+            base="/$repo"
+          fi
+          echo "Base path: '${base}'"
+          echo "NEXT_PUBLIC_BASE_PATH=${base}" >> "$GITHUB_ENV"
+
+      - name: Build
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_ARTIFINANCIAL_STATIC: "true"
+        run: npm run build
+
+      # Pages skips directories beginning with an underscore without this, which
+      # would drop the whole of _next and serve an unstyled page.
+      - name: Disable Jekyll
+        run: touch frontend/out/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: frontend/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

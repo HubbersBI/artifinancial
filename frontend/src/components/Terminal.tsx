@@ -7,6 +7,7 @@ import { Heatmap } from "./Heatmap";
 import { MainChart } from "./MainChart";
 import { PnlChart } from "./PnlChart";
 import { PositionsPanel } from "./PositionsPanel";
+import { SimulatedNotice } from "./SimulatedNotice";
 import { TradeBar } from "./TradeBar";
 import { Watchlist } from "./Watchlist";
 import { usePriceStream } from "@/hooks/usePriceStream";
@@ -152,6 +153,7 @@ export function Terminal() {
 
   return (
     <div className="flex h-screen flex-col gap-1 bg-void p-1">
+      <SimulatedNotice />
       <Header totalValue={totalValue} cashBalance={portfolio.cash_balance} status={status} />
 
       <TradeBar
