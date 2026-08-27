@@ -15,7 +15,7 @@ keeps saying so in the header.
 
 An AI-powered trading workstation: streaming prices, a simulated portfolio you can trade, and an LLM chat assistant that analyzes positions and executes trades from natural language. Prices come from a built-in market simulator, not a real feed.
 
-Built by a team of six specialist coding agents — each owning a slice of the stack and working in parallel against a shared written interface contract — under my direction as architect and orchestrator
+Built by a team of six specialist coding agents — each owning a slice of the stack and working in parallel against a shared written interface contract — under my direction as architect and orchestrator. Later ported to run in the browser in a single Claude Code session, which is what the live demo above runs.
 
 ## Features
 
